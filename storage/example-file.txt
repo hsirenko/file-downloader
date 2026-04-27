@@ -1,0 +1,589 @@
+The Art of Doing Science and Engineering
+The Art of Doing Science and
+Engineering
+Learning to Learn
+Richard W.Hamming
+U.S. Naval Postgraduate School
+Monterey, California
+GORDON AND BREACH SCIENCE PUBLISHERS
+Australia • Canada • China • France • Germany • India •
+Japan • Luxembourg • Malaysia • The Netherlands •
+Russia • Singapore • Switzerland • Thailand •
+United Kingdom
+This edition published in the Taylor & Francis e-Library, 2005.
+“To purchase your own copy of this or any of Taylor & Francis or Routledge’s collection of thousands of eBooks please go to
+www.eBookstore.tandf.co.uk.”
+Copyright © 1997 OPA (Overseas Publishers Association)
+Amsterdam B.V.Published in The Netherlands under license
+by Gordon and Breach Science Publishers.
+All rights reserved.
+No part of this book may be reproduced or utilized in any
+form or by any means, electronic or mechanical, including
+photocopying and recording, or by any information storage
+or retrieval system, without permission in writing from the
+publisher. Printed in India.
+Amsteldijk 166
+1st Floor
+1079 LH Amsterdam
+The Netherlands
+British Library Cataloguing in Publication Data
+Hamming, R.W. (Richard Wesley), 1915–
+The art of doing science and engineering: learning to
+learn
+1. Science 2. Engineering
+I. Title
+500
+ISBN 0-203-45071-X Master e-book ISBN
+ISBN 0-203-45913-X (Adobe eReader Format)
+ISBN 90-5699-501-4 (Print Edition)
+CONTENTS
+Preface vi
+Introduction viii
+1 Orientation 1
+2 Foundations of the Digital (Discrete) Revolution 9
+3 History of Computer—Hardware 17
+4 History of Computer—Software 24
+5 History of Computer Applications 33
+6 Limits of Computer Applications—AI—I 40
+7 Limits of Computer Applications—AI—II 47
+8 Limits of Computer Applications—AI—III 55
+9 n-Dimensional Space 57
+10 Coding Theory—I 67
+11 Coding Theory—II 74
+12 Error Correcting Codes 81
+13 Information Theory 89
+14 Digital Filters—I 97
+15 Digital Filters—II 107
+16 Digital Filters—III 115
+17 Digital Filters—IV 123
+18 Simulation—I 128
+19 Simulation—II 135
+20 Simulation—III 141
+21 Fiber Optics 151
+22 Computer Aided Instruction—CAI 157
+v
+23 Mathematics 163
+24 Quantum Mechanics 171
+25 Creativity 176
+26 Experts 181
+27 Unreliable Data 187
+28 Systems Engineering 195
+29 You Get What You Measure 202
+30 You and Your Research 209
+Index 216
+PREFACE
+After many years of pressure and encouragement from friends, I decided to write up the graduate course in
+engineering I teach at the U.S.Naval Postgraduate School in Monterey, California. At first I concentrated on
+all the details I thought should be tightened up, rather than leave the material as a series of somewhat
+disconnected lectures. In class the lectures often followed the interests of the students, and many of the later
+lectures were suggested topics in which they expressed an interest Also, the lectures changed from year to
+year as various areas developed. Since engineering depends so heavily these days on the corresponding
+sciences, I often use the terms interchangeably.
+After more thought I decided that since I was trying to teach “style” of thinking in science and
+engineering, and “style” is an art, I should therefore copy the methods of teaching used for the other arts—
+once the fundamentals have been learned. How to be a great painter cannot be taught in words; one learns
+by trying many different approaches that seem to surround the subject. Art teachers usually let the advanced
+student paint, and then make suggestions on how they would have done it, or what might also be tried, more
+or less as the points arise in the student’s head—which is where the learning is supposed to occur! In this
+series of lectures I try to communicate to students what cannot be said in words—the essence of style in
+science and engineering. I have adopted a loose organization with some repetition since this often occurs in
+the lectures. There are, therefore, digressions and stories—with some told in two different places—all in the
+somewhat rambling, informal style typical of lectures.
+I have used the “story” approach, often emphasizing the initial part of the discovery, because I firmly
+believe in Pasteur’s remark, “Luck favors the prepared mind.” In this way I can illustrate how the
+individual’s preparation before encountering the problem can often lead to recognition, formulation, and
+solution. Great results in science and engineering are “bunched” in the same person too often for success to
+be a matter of random luck.
+Teachers should prepare the student for the student’s future, not for the teacher’s past. Most teachers
+rarely discuss the important topic of the future of their field, and when this is pointed out they usually reply:
+“No one can know the future.” It seems to me the difficulty of knowing the future does not absolve the
+teacher from seriously trying to help the student to be ready for it when it comes. It is obvious the
+experience of an individual is not necessarily that of a class of individuals; therefore, any one person’s
+projection into the future is apt to be somewhat personal and will not be universally accepted. This does not
+justify reverting to impersonal surveys and losing the impact of the personal story.
+Since my classes are almost all carefully selected navy, marine, army, air force, and coast guard students
+with very few civilians, and, interestingly enough, about 15% very highly selected foreign military, the
+students face a highly technical future—hence the importance of preparing them for their future and not just
+our past.
+vii
+The year 2020 seems a convenient date to center the preparation for their future—a sort of 20/20
+foresight, as it were. As graduate students working toward a master’s degree, they have the basics well in
+hand. That leaves me the task of adding “style” to their education, which in practice is usually the difference
+between an average person and a great one. The school has allowed me great latitude in trying to teach a
+completely non-technical course; this course “complements” the more technical ones. As a result, my
+opening words, occasionally repeated, are: “There is really no technical content in the course, though I will,
+of course, refer to a great deal of it, and hopefully it will generally be a good review of the fundamentals of
+what you have learned. Do not think it is the content of the course—it is only illustrative material. Style of
+thinking is the center of the course.”
+The subtitle of this book, Learning to Learn, is the main solution I offer to help students cope with the
+rapid changes they will have to endure in their fields. The course centers around how to look at and think
+about knowledge, and it supplies some historical perspectives that might be useful.
+This course is mainly personal experiences I have had and digested, at least to some extent. Naturally one
+tends to remember one’s successes and forget lesser events, but I recount a number of my spectacular
+failures as clear examples of what to avoid. I have found that the personal story is far, far more effective
+than the impersonal one; hence there is necessarily an aura of “bragging” in the book that is unavoidable.
+Let me repeat what I earlier indicated. Apparently an “art”— which almost by definition cannot be put
+into words—is probably best communicated by approaching it from many sides and doing so repeatedly,
+hoping thereby students will finally master enough of the art, or if you wish, style, to significantly increase
+their future contributions to society. A totally different description of the course is: it covers all kinds of
+things that could not find their proper place in the standard curriculum.
+The casual reader should not be put off by the mathematics; it is only “window dressing” used to
+illustrate and connect up with earlier learned material. Usually the underlying ideas can be grasped from the
+words alone.
+It is customary to thank various people and institutions for help in producing a book. Thanks obviously
+go to AT&T Bell Laboratories, Murray Hill, New Jersey, and to the U.S.Naval Postgraduate School,
+especially the Department of Electrical and Computer Engineering, for making this book possible.
+INTRODUCTION
+This book is concerned more with the future and less with the past of science and engineering. Of course
+future predictions are uncertain and usually based on the past; but the past is also much more uncertain—or
+even falsely reported—than is usually recognized. Thus we are forced to imagine what the future will
+probably be. This course has been called"Hamming on Hamming" since it draws heavily on my own past
+experiences, observations, and wide reading.
+There is a great deal of mathematics in the early part because almost surely the future of science and
+engineering will be more mathematical than the past, and also I need to establish the nature of the
+foundations of our beliefs and their uncertainties. Only then can I show the weaknesses of our current
+beliefs and indicate future directions to be considered.
+If you find the mathematics difficult, skip those early parts. Later sections will be understandable
+provided you are willing to forgo the deep insights mathematics gives into the weaknesses of our current
+beliefs. General results are always stated in words, so the content will still be there but in a slightly diluted
+form.
+1 Orientation
+The purpose of this course is to prepare you for your technical future. There is really no technical content in
+the course, though I will, of course, refer to a great deal of it, and hopefully it will generally be a good
+review of the fundamentals you have learned. Do not think the technical content is the course—it is only
+illustrative material. Style of thinking is the center of the course. I am concerned with educating and not
+training you.
+I will examine, criticize, and display styles of thinking. To illustrate the points of style I will often use
+technical knowledge most of you know, but, again, it will be, I hope, in the form of a useful review which
+concentrates on the fundamentals. You should regard this as a course which complements the many
+technical courses you have learned. Many of the things I will talk about are things which I believe you ought
+to know but which simply do not fit into courses in the standard curriculum. The course exists because the
+department of Electrical and Computer Engineering of the Naval Postgraduate School recognizes the need
+for both a general education and the specialized technical training your future demands.
+The course is concerned with “style”, and almost by definition style cannot be taught in the normal
+manner by using words. I can only approach the topic through particular examples, which I hope are well
+within your grasp, though the examples come mainly from my 30 years in the mathematics department of
+the Research Division of Bell Telephone Laboratories (before it was broken up). It also comes from years
+of study of the work of others.
+The belief anything can be “talked about” in words was certainly held by the early Greek philosophers,
+Socrates (469–399), Plato (427–347), and Aristotle (384–322). This attitude ignored the current mystery
+cults of the time who asserted you had to “experience” some things which could not be communicated in
+words. Examples might be the gods, truth, justice, the arts, beauty, and love. Your scientific training has
+emphasized the role of words, along with a strong belief in reductionism, hence to emphasize the possible
+limitations of language I shall take up the topic in several places in the book. I have already said “style” is
+such a topic.
+I have found to be effective in this course, I must use mainly first hand knowledge, which implies I break
+a standard taboo and talk about myself in the first person, instead of the traditional impersonal way of
+science. You must forgive me in this matter, as there seems to be no other approach which will be as
+effective. If I do not use direct experience then the material will probably sound to you like merely pious
+words and have little impact on your minds, and it is your minds I must change if I am to be effective.
+This talking about first person experiences will give a flavor of “bragging”, though I include a number of
+my serious errors to partially balance things. Vicarious learning from the experiences of others saves
+making errors yourself, but I regard the study of successes as being basically more important than the study
+of failures. As I will several times say, there are so many ways of being wrong and so few of being right,
+2 CHAPTER 1
+studying successes is more efficient, and furthermore when your turn comes you will know how to succeed
+rather than how to fail!
+I am, as it were, only a coach. I cannot run the mile for you; at best I can discuss styles and criticize
+yours. You know you must run the mile if the athletics course is to be of benefit to you—hence you must
+think carefully about what you hear or read in this book if it is to be effective in changing you—which must
+obviously be the purpose of any course. Again, you will get out of this course only as much as you put in,
+and if you put in little effort beyond sitting in the class or reading the book, then it is simply a waste of your
+time. You must also mull things over, compare what I say with your own experiences, talk with others, and
+make some of the points part of your way of doing things.
+Since the subject matter is “style”, I will use the comparison with teaching painting. Having learned the
+fundamentals of painting, you then study under a master you accept as being a great painter; but you know
+you must forge your own style out of the elements of various earlier painters plus your native abilities. You
+must also adapt your style to fit the future, since merely copying the past will not be enough if you aspire to
+future greatness—a matter I assume, and will talk about often in the book. I will show you my style as best I
+can, but, again, you must take those elements of it which seem to fit you, and you must finally create your
+own style. Either you will be a leader, or a follower, and my goal is for you to be a leader. You cannot
+adopt every trait I discuss in what I have observed in myself and others; you must select and adapt, and
+make them your own if the course is to be effective.
+Even more difficult than what to select is that what is a successful style in one age may not be appropriate
+to the next age! My predecessors at Bell Telephone Laboratories used one style; four of us who came in all
+at about the same time, and had about the same chronological age, found our own styles and as a result we
+rather completely transformed the overall style of the Mathematics Department, as well as many parts of the
+whole Laboratories. We privately called ourselves “The four young Turks”, and many years later I found
+top management had called us the same!
+I return to the topic of education. You all recognize there is a significant difference between education
+and training.
+Education is what, when, and why to do things, Training is how to do it.
+Either one without the other is not of much use. You need to know both what to do and how to do it. I have
+already compared mental and physical training and said to a great extent in both you get out of it what you
+put into it—all the coach can do is suggest styles and criticize a bit now and then. Because of the usual size
+of these classes, or because you are reading the book, there can be little direct criticism of your thinking by
+me, and you simply have to do it internally and between yourselves in conversations, and apply the things I
+say to your own experiences. You might think education should precede training, but the kind of educating I
+am trying to do must be based on your past experiences and technical knowledge. Hence this inversion of
+what might seem to be reasonable. In a real sense I am engaged in “meta-education”, the topic of the course
+is education itself and hence our discussions must rise above it—“meta-education”, just as metaphysics was
+supposed to be above physics in Aristotle’s time (actually “follow”, “transcend” is the translation of
+“meta”).
+This book is aimed at your future, and we must examine what is likely to be the state of technology
+(Science and Engineering) at the time of your greatest contributions. It is well known that since about Isaac
+Newton’s time (1642–1727) knowledge of the type we are concerned with has about doubled every 17
+years. First, this may be measured by the books published (a classic observation is libraries must double
+their holdings every 17 years if they are to maintain their relative position). Second, when I went to Bell
+ORIENTATION 3
+Telephone Laboratories in 1946 they were trying to decrease the size of the staff from WW-II size down to
+about 5500. Yet during the 30 years I was there I observed a fairly steady doubling of the number of
+employees every 17 years, regardless of the administration having hiring freezes now and then, and such
+things. Third, the growth of the number of scientists generally has similarly been exponential, and it is said
+currently almost 90% of the scientists who ever lived are now alive! It is hard to believe in your future there
+will be a dramatic decrease in these expected rates of growth, hence you face, even more than I did, the
+constant need to learn new things.
+Here I make a digression to illustrate what is often called “back of the envelop calculations”. I have
+frequently observed great scientists and engineers do this much more often than “the run of the mill”
+people, hence it requires illustration. I will take the above two statements, knowledge doubles every 17
+years, and 90% of the scientists who ever lived are now alive, and ask to what extent they are compatible.
+The model of the growth of knowledge and the growth of scientists assumed are both exponential, with the
+growth of knowledge being proportional to the number of scientists alive. We begin by assuming the
+number scientists at any time t is
+and the amount of knowledge produced annually has a constant k of proportionality to the number of
+scientists alive. Assuming we begin at minus infinity in time (the error is small and you can adjust it to
+Newton’s time if you wish), we have the formula
+hence we know b. Now to the other statement. If we allow the lifetime of a scientist to be 55 years (it seems
+likely that the statement meant living and not practicing, but excluding childhood) then we have
+which is very close to 90%.
+Typically the first back of the envelop calculations use, as we did, definite numbers where one has a feel
+for things, and then we repeat the calculations with parameters so you can adjust things to fit the data better
+and understand the general case. Let the doubling period be D, and the lifetime of a scientist be L. The first
+equation now becomes
+and the second becomes:
+4 CHAPTER 1
+With D=17 years we have 17×3.3219=56.47…years for the lifetime of a scientist, which is close to the 55
+we assumed. We can play with ratio of L/D until we find a slightly closer fit to the data (which was
+approximate, though I believe more in the 17 years for doubling than I do in the 90%). Back of the envelop
+computing indicates the two remarks are reasonably compatible. Notice the relationship applies for all time
+so long as the assumed simple relationships hold.
+The reason back of the envelop calculations are widely used by great scientists is clearly revealed—you
+get a good feeling for the truth or falsity of what was claimed, as well as realize which factors you were
+inclined not to think about, such as exactly what was meant by the lifetime of a scientist. Having done the
+calculation you are much more likely to retain the results in your mind. Furthermore, such calculations keep
+the ability to model situations fresh and ready for more important applications as they arise. Thus I
+recommend when you hear quantitative remarks such as the above you turn to a quick modeling to see if
+you believe what is being said, especially when given in the public media like the press and TV. Very often
+you find what is being said is nonsense, either no definite statement is made which you can model, or if you
+can set up the model then the results of the model do not agree with what was said. I found it very valuable
+at the physics table I used to eat with; I sometimes cleared up misconceptions at the time they were being
+formed, thus advancing matters significantly.
+Added to the problem of the growth of new knowledge is the obsolescence of old knowledge. It is
+claimed by many the half-life of the technical knowledge you just learned in school is about 15 years—in 15
+years half of it will be obsolete (either we have gone in other directions or have replaced it with new
+material). For example, having taught myself a bit about vacuum tubes (because at Bell Telephone
+Laboratories they were at that time obviously important) I soon found myself helping, in the form of
+computing, the development of transistors—which obsoleted my just learned knowledge!
+To bring the meaning of this doubling down to your own life, suppose you have a child when you are x
+years old. That child will face, when it is in college, about y times the amount you faced.
+y x
+factor of increase years
+2 17
+3 27
+4 34
+5 39
+6 44
+7 48
+8 51
+This doubling is not just in theorems of mathematics and technical results, but in musical recordings of
+Beethoven’s Ninth, of where to go skiing, of TV programs to watch or not to watch. If you were at times awed
+by the mass of knowledge you faced when you went to college, or even now, think of your children’s
+troubles when they are there! The technical knowledge involved in your life will quadruple in 34 years, and
+many of you will then be near the high point of your career. Pick your estimated years to retirement and
+then look in the left-hand column for the probable factor of increase over the present current knowledge
+when you finally quit!
+What is my answer to this dilemma? One answer is you must concentrate on fundamentals, at least what
+you think at the time are fundamentals, and also develop the ability to learn new fields of knowledge when
+ORIENTATION 5
+they arise so you will not be left behind, as so many good engineers are in the long run. In the position I
+found myself in at the Laboratories, where I was the only one locally who seemed (at least to me) to have a
+firm grasp on computing, I was forced to learn numerical analysis, computers, pretty much all of the
+physical sciences at least enough to cope with the many different computing problems which arose and whose
+solution could benefit the Labs, as well as a lot of the social and some the biological sciences. Thus I am a
+veteran of learning enough to get along without at the same time devoting all my effort to learning new
+topics and thereby not contributing my share to the total effort of the organization. The early days of
+learning had to be done while I was developing and running a computing center. You will face similar
+problems in your career as it progresses, and, at times, face problems which seem to overwhelm you.
+How are you to recognize “fundamentals”? One test is they have lasted a long time. Another test is from
+the fundamentals all the rest of the field can be derived by using the standard methods in the field.
+I need to discuss science vs. engineering. Put glibly:
+In science if you know what you are doing you should not be doing it.
+In engineering if you do not know what you are doing you should not be doing it.
+Of course, you seldom, if ever, see either pure state. All of engineering involves some creativity to cover the
+parts not known, and almost all of science includes some practical engineering to translate the abstractions
+into practice. Much of present science rests on engineering tools, and as time goes on, engineering seems to
+involve more and more of the science part. Many of the large scientific projects involve very serious
+engineering problems—the two fields are growing together! Among other reasons for this situation is almost
+surely we are going forward at an accelerated pace, and now there is not time to allow us the leisure which
+comes from separating the two fields. Furthermore, both the science and the engineering you will need for
+your future will more and more often be created after you left school. Sorry! But you will simply have to
+actively master on your own the many new emerging fields as they arise, without having the luxury of being
+passively taught.
+It should be noted that engineering is not just applied science, which is a distinct third field (though it is
+not often recognized as such) which lies between science and engineering.
+I read somewhere there are 76 different methods of predicting the future—but very number suggests there
+is no reliable method which is widely accepted. The most trivial method is to predict tomorrow will be
+exactly the same as today—which at times is a good bet. The next level of sophistication is to use the current
+rates of change and to suppose they will stay the same—linear prediction in the variable used. Which variable
+you use can, of course, strongly affect the prediction made! Both methods are not much good for long-term
+predictions, however.
+History is often used as a long-term guide; some people believe history repeats itself and others believe
+exactly the opposite! It is obvious:
+The past was once the future and the future will become the past.
+In any case I will often use history as a background for the extrapolations I make. I believe the best
+predictions are based on understanding the fundamental forces involved, and this is what I depend on
+mainly. Often it is not physical limitations which control but rather it is human made laws, habits, and
+organizational rules, regulations, personal egos, and inertia, which dominate the evolution to the future. You
+have not been trained along these lines as much as I believe you should have been, and hence I must be careful
+to include them whenever the topics arise.
+6 CHAPTER 1
+There is a saying,“Short term predictions are always optimistic and long term predictions are always
+pessimistic”. The reason, so it is claimed, the second part is true is for most people the geometric growth
+due to the compounding of knowledge is hard to grasp. For example for money a mere 6% annual growth
+doubles the money in about 12 years! In 48 years the growth is a factor of 16. An example of the truth of
+this claim that most long-term predictions are low is the growth of the computer field in speed, in density of
+components, in drop in price, etc. as well as the spread of computers into the many corners of life. But the
+field of Artificial Intelligence (AI) provides a very good counter example. Almost all the leaders in the field
+made long-term predictions which have almost never come true, and are not likely to do so within your
+lifetime, though many will in the fullness of time.
+I shall use history as a guide many times in spite of Henry Ford, Sr. saying, “History is Bunk”. Probably
+Ford’s points were:
+1. History is seldom reported at all accurately, and I have found no two reports of what happened at Los
+Alamos during WW-II seems to agree.
+2. Due to the pace of progress the future is rather disconnected from the past; the presence of the modern
+computer is an example of the great differences which have arisen.
+Reading some historians you get the impression the past was determined by big trends, but you also have
+the feeling the future has great possibilities. You can handle this apparent contradiction in at least four ways:
+1. You can simply ignore it.
+2. You can admit it.
+3. You can decide the past was a lot less determined than historians usually indicate and individual
+choices can make large differences at times. Alexander the Great, Napoleon, and Hitler had great
+effects on the physical side of life, while Pythagoras, Plato, Aristotle, Newton, Maxwell, and Einstein
+are examples on the mental side.
+4. You can decide the future is less open ended than you would like to believe, and there is really less
+choice than there appears to be.
+It is probable the future will be more limited by the slow evolution of the human animal and the
+corresponding human laws, social institution, and organizations than it will be by the rapid evolution of
+technology.
+In spite of the difficulty of predicting the future and that:
+Unforeseen technological inventions can completely upset the most careful predictions,
+you must try to foresee the future you will face. To illustrate the importance of this point of trying to foresee
+the future I often use a standard story.
+It is well known the drunken sailor who staggers to the left or right with n independent random steps will,
+on the average, end up about steps from the origin. But if there is a pretty girl in one direction, then his
+steps will tend to go in that direction and he will go a distance proportional to n. In a lifetime of many, many
+independent choices, small and large, a career with a vision will get you a distance proportional to n, while
+no vision will get you only the distance In a sense, the main difference between those who go far and
+those who do not is some people have a vision and the others do not and therefore can only react to the
+current events as they happen.
+ORIENTATION 7
+One of the main tasks of this course is to start you on the path of creating in some detail your vision of
+your future. If I fail in this I fail in the whole course. You will probably object that if you try to get a vision
+now it is likely to be wrong—and my reply is from observation I have seen the accuracy of the vision
+matters less than you might suppose, getting anywhere is better than drifting, there are potentially many
+paths to greatness for you, and just which path you go on, so long as it takes you to greatness, is none of my
+business. You must, as in the case of forging your personal style, find your vision of your future career, and
+then follow it as best you can.
+No vision, not much of a future.
+To what extent history does or does not repeat itself is a moot question. But it is one of the few guides you
+have, hence history will often play a large role in my discussions—I am trying to provide you with some
+perspective as a possible guide to create your vision of your future. The other main tool I have used is an
+active imagination in trying to see what will happen. For many years I devoted about 10% of my time
+(Friday afternoons) to trying to understand what would happen in the future of computing, both as a
+scientific tool and as shaper of the social world of work and play. In forming your plan for your future you
+need to distinguish three different questions:
+What is possible?
+What is likely to happen?
+What is desirable to have happen?
+In a sense the first is Science—what is possible. The second in Engineering—what are the human factors
+which chose the one future that does happen from the ensemble of all possible futures. The third, is ethics,
+morals, or what ever other word you wish to apply to value judgments. It is important to examine all three
+questions, and in so far as the second differs from the third, you will probably have an idea of how to alter
+things to make the more desirable future occur, rather than let the inevitable happen and suffer the
+consequences. Again, you can see why having a vision is what tends to separate the leaders from the
+followers.
+The standard process of organizing knowledge by departments, and subdepartments, and further breaking
+it up into separate courses, tends to conceal the homogeneity of knowledge, and at the same time to omit
+much which falls between the courses. The optimization of the individual courses in turn means a lot of
+important things in Engineering practice are skipped since they do not appear to be essential to any one
+course. One of the functions of this book is to mention and illustrate many of these missed topics which are
+important in the practice of Science and Engineering. Another goal of the course is to show the essential
+unity of all knowledge rather than the fragments which appear as the individual topics are taught. In your
+future anything and everything you know might be useful, but if you believe the problem is in one area you
+are not apt to use information that is relevant but which occurred in another course.
+The course will center around computers. It is not merely because I spent much of my career in Computer
+Science and Engineering, rather it seems to me computers will dominate your technical lives. I will repeat a
+number of times in the book the following facts: Computers when compared to Humans have the
+advantages:
+Economics Speed —far, far faster
+—far cheaper, and getting more so
+8 CHAPTER 1
+Accuracy —far more accurate (precise)
+Reliability Rapidity of control —far ahead (many have error correction built into them)
+—many current airplanes are unstable
+Freedom from boredom Bandwidth in and out Ease of retraining Hostile environments Personnel problems and require rapid computer control to make them practical
+—an overwhelming advantage
+—again overwhelming
+—change programs, not unlearn and then learn the new thing consuming hours and hours of
+human time and effort
+—outer space, underwater, high radiation fields, warfare, manufacturing situations that are
+unhealthful, etc.
+—they tend to dominate management of humans but not of machines; with machines there
+are no pensions, personal squabbles, unions, personal leave, egos, deaths of relatives,
+recreation, etc.
+I need not list the advantages of humans over computers—almost every one of you has already objected to
+this list and has in your mind started to cite the advantages on the other side.
+Lastly, in a sense, this is a religious course—I am preaching the message that, with apparently only one
+life to live on this earth, you ought to try to make significant contributions to humanity rather than just get
+along through life comfortably—that the life of trying to achieve excellence in some area is in itself a
+worthy goal for your life. It has often been observed the true gain is in the struggle and not in the
+achievement—a life without a struggle on your part to make yourself excellent is hardly a life worth living.
+This, it must be observed, is an opinion and not a fact, but it is based on observing many people’s lives and
+speculating on their total happiness rather than the moment to moment pleasures they enjoyed. Again, this
+opinion of their happiness must be my own interpretation as no one can know another’s life. Many reports
+by people who have written about the “good life” agree with the above opinion. Notice I leave it to you to
+pick your goals of excellence, but claim only a life without such a goal is not really living but it is merely
+existing—in my opinion. In ancient Greece Socrates (469–399) said:
+The unexamined life is not worth living.
+2
+Foundations of the Digital (Discrete)
+We are approaching the end of the revolution of going from signaling with continuous signals to signaling
+with discrete pulses, and we are now probably moving from using pulses to using solitons as the basis for
+our discrete signaling. Many signals occur in Nature in a continuous form (if you disregard the apparent
+discrete structure of things built out of molecules and electrons). Telephone voice transmission, musical
+sounds, heights and weights of people, distance covered, velocities, densities, etc. are examples of
+continuous signals. At present we usually convert the continuous signal almost immediately to a sampled
+discrete signal; the sampling being usually at equally spaced intervals in time and the amount of the signal
+being quantized to a comparatively few levels. Quantization is a topic we will ignore in these chapters,
+though it is important in some situations, especially in large scale computations with numbers.
+Why has this revolution happened?
+1. In continuous signaling (transmission) you often have to amplify the signal to compensate for natural
+losses along the way. Any error made at one stage, before or during amplification, is naturally amplified by
+the next stage. For example, the telephone company in sending a voice across the continent might have a
+total amplification factor of 10120. At first 10120 seems to be very large so we do a quick back of the envelop
+modeling to see if it is reasonable. Consider the system in more detail. Suppose each amplifier has a gain of
+100, and they are spaced every 50 miles. The actual path of the signal may well be over 3000 miles, hence
+some 60 amplifiers, hence the above factor does seem reasonable now we have seen how it can arise. It
+should be evident such amplifiers had to be built with exquisite accuracy if the system was to be suitable for
+human use.
+Compare this to discrete signaling. At each stage we do not amplify the signal, but rather we use the
+incoming pulse to gate, or not, a standard source of pulses; we actually use repeaters, not amplifiers. Noise
+introduced at one spot, if not too much to make the pulse detection wrong at the next repeater, is
+automatically removed. Thus with remarkable fidelity we can transmit a voice signal if we use digital
+signaling, and furthermore the equipment need not be built extremely accurately. We can use, if necessary,
+error detecting and error correcting codes to further defeat the noise. We will examine these codes later,
+Chapters 10–12. Along with this we have developed the area of digital filters which are often much more
+versatile, compact, and cheaper than are analog filters, Chapters 14–17. We should note here transmission
+through space (typically signaling) is the same as transmission through time (storage).
+Digital computers can take advantage of these features and carry out very deep and accurate
+computations which are beyond the reach of analog computation. Analog computers have probably passed
+their peak of importance, but should not be dismissed lightly. They have some features which, so long as
+great accuracy or deep computations are not required, make them ideal in some situations.
+2. The invention and development of transistors and the integrated circuits, ICs, has greatly helped the
+digital revolution. Before ICs the problem of soldered joints dominated the building of a large computer,
+10 CHAPTER 2
+and ICs did away with most of this problem, though soldered joints are still troublesome. Furthermore, the
+high density of components in an IC means lower cost and higher speeds of computing (the parts must be
+close to each other since otherwise the time of transmission of signals will significantly slow down the
+speed of computation). The steady decrease of both the voltage and current levels has contributed to the
+partial solving of heat dissipation.
+It was estimated in 1992 that interconnection costs were approximately:
+Interconnection on the chip $10–5=0.001 cent
+Interchip $10–2=1 cent
+Interboard $10–1=10 cents
+Interframe $100=100 cents
+3. Society is steadily moving from a material goods society to an information service society. At the time of
+the American Revolution, say 1780 or so, over 90% of the people were essentially farmers—now farmers
+are a very small percent of workers. Similarly, before WW-II most workers were in factories—now less
+than half are there. In 1993, there were more people in Government (excluding the military), than there
+were in manufacturing! What will the situation be in 2020? As a guess I would say less than 25% of the
+people in the civilian work force will be handling things, the rest will be handling information in some form
+or other. In making a movie or a TV program you are making not so much a thing, though of course it does
+have a material form, as you are organizing information. Information is, of course, stored in a material
+form, say a book (the essence of a book is information), but information is not a material good to be consumed
+like food, a house, clothes, an automobile, or an airplane ride for transportation.
+The information revolution arises from the above three items plus their synergistic interaction, though the
+following items also contribute.
+4. The computers make it possible for robots to do many things, including much of the present
+manufacturing. Evidently computers will play a dominant role in robot operation, though one must
+be careful not to claim the standard von Neumann type of computer will be the sole control mechanism,
+rather probably the current neural net computers, fuzzy set logic, and variations will do much of the control.
+Setting aside the child’s view of a robot as a machine resembling a human, but rather thinking of it as a
+device for handling and controlling things in the material world, robots used in manufacturing do the
+following:
+A. Produce a better product under tighter control limits.
+B. Produce usually a cheaper product.
+C. Produce a different product.
+This last point needs careful emphasis.
+When we first passed from hand accounting to machine accounting we found it necessary, for
+economical reasons if no other, to somewhat alter the accounting system. Similarly, when we passed from
+strict hand fabrication to machine fabrication we passed from mainly screws and bolts to rivets and
+welding.
+It has rarely proved practical to produce exactly the same product by machines as we produced by
+hand.
+FOUNDATIONS OF THE DIGITAL (DISCRETE) REVOLUTION 11
+Indeed, one of the major items in the conversion from hand to machine production is the imaginative
+redesign of an equivalent product. Thus in thinking of mechanizing a large organization, it won’t work if
+you try to keep things in detail exactly the same, rather there must be a larger give-and-take if there is to be
+a significant success. You must get the essentials of the job in mind and then design the mechanization to do
+that job rather than trying to mechanize the current version—if you want a significant success in the long
+run.
+I need to stress this point; mechanization requires you produce an equivalent product, not identically the
+same one. Furthermore, in any design it is now essential to consider field maintenance since in the long run
+it often dominates all other costs. The more complex the designed system the more field maintenance must
+be central to the final design. Only when field maintenance is part of the original design can it be safely
+controlled; it is not wise to try to graft it on later. This applies to both mechanical things and to human
+organizations.
+5. The effects of computers on Science have been very large, and will probably continue as time goes on.
+My first experience in large scale computing was in the design of the original atomic bomb at Los Alamos.
+There was no possibility of a small scale experiment either you have a critical mass or you do not—and
+hence computing seemed at that time to be the only practical approach. We simulated, on primitive IBM
+accounting machines, various proposed designs, and they gradually came down to a design to test in the
+desert at Alamagordo, NM.
+From that one experience, on thinking it over carefully and what it meant, I realized computers would
+allow the simulation of many different kinds of experiments. I put that vision into practice at Bell
+Telephone Laboratories for many years. Somewhere in the mid-tolate 1950s in an address to the President
+and V.Ps of Bell Telephone Laboratories I said, “At present we are doing 1 out of 10 experiments on the
+computers and 9 in the labs, but before I leave it will be 9 out of 10 on the machines”. They did not believe
+me then, as they were sure real observations were the key to experiments and I was just a wild theoretician
+from the mathematics department, but you all realize by now we do somewhere between 90 % to 99 % of
+our experiments on the machines and the rest in the labs. And this trend will go on! It is so much cheaper to
+do simulations than real experiments, so much more flexible in testing, and we can even do things which
+cannot be done in any lab, that it is inevitable the trend will continue for some time. Again, the product was
+changed!
+But you were all taught about the evils of the Middle Age scholasticism—people deciding what would
+happen by reading in the books of Aristotle (384–322) rather than looking at Nature. This was Galileo’s
+(1564–1642) great point which started the modern scientific revolution—look at Nature not in books! But what
+was I saying above? We are now looking more and more in books and less and less at Nature! There is
+clearly a risk we will go too far occasionally—and I expect this will happen frequently in the future. We must
+not forget, in all the enthusiasm for computer simulations, occasionally we must look at Nature as She is.
+6. Computers have also greatly affected Engineering. Not only can we design and build far more complex
+things than we could by hand, we can explore many more alternate designs. We also now use computers to
+control situations such as on the modern high speed airplane where we build unstable designs and then use
+high speed detection and computers to stabilize them since the unaided pilot simply cannot fly them directly.
+Similarly, we can now do unstable experiments in the laboratories using a fast computer to control the
+instability. The result will be that the experiment will measure something very accurately right on the edge
+of stability.
+As noted above, Engineering is coming closer to Science, and hence the role of simulation in unexplored
+situations is rapidly increasing in Engineering as well as Science. It is also true computers are now often an
+essential component of a good design.
+12 CHAPTER 2
+In the past Engineering has been dominated to a great extent by “what can we do”, but now “what do we
+want to do” looms greater since we now have the power to design almost anything we want. More than ever
+before, Engineering is a matter of choice and balance rather than just doing what can be done. And more
+and more it is the human factors which will determine good design—a topic which needs your serious
+attention at all times.
+7. The effects on society are also large. The most obvious illustration is computers have given top
+management the power to micromanage their organization, and top management has shown little or no
+ability to resist using this power. You can regularly read in the papers some big corporation is
+decentralizing, but when you follow it for several years you see they merely intended to do so, but did not.
+Among other evils of micromanagement is lower management does not get the chance to make
+responsible decisions and learn from their mistakes, but rather because the older people finally retire then
+lower management finds itself as top management —without having had many real experiences in
+management!
+Furthermore, central planning has been repeatedly shown to give poor results (consider the Russian
+experiment for example or our own bureaucracy). The persons on the spot usually have better knowledge
+than can those at the top and hence can often (not always) make better decisions if things are not
+micromanaged. The people at the bottom do not have the larger, global view, but at the top they do not have
+the local view of all the details, many of which can often be very important, so either extreme gets poor
+results.
