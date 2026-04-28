@@ -117,10 +117,51 @@ class DownloaderAppTest {
     }
 
     private static HttpHeaders headers(final String... keysAndValues) {
+        if (keysAndValues.length % 2 != 0) {
+            throw new IllegalArgumentException("pairs required");
+        }
         final Map<String, List<String>> map = new java.util.HashMap<>();
         for (int i = 0; i < keysAndValues.length; i += 2) {
             map.put(keysAndValues[i], List.of(keysAndValues[i + 1]));
         }
         return HttpHeaders.of(map, (name, value) -> true);
     }
+
+    @Test
+    @DisplayName("interrupted request returns EXIT_INTERRUPTED and preserves interrupt flag")
+    void interruptedRequest() throws Exception {
+        when(httpClient.send(
+                any(HttpRequest.class),
+                org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<Void>>any()
+        )).thenThrow(new InterruptedException("test interrupt"));
+
+        final DownloaderApp app = new DownloaderApp();
+
+        final boolean wasInterruptedBefore = Thread.currentThread().isInterrupted();
+        try {
+            final int exitCode = app.run(new String[]{"http://localhost:8080/a.bin"}, httpClient);
+
+            assertThat(exitCode).isEqualTo(DownloaderApp.EXIT_INTERRUPTED);
+            assertThat(Thread.currentThread().isInterrupted()).isTrue();
+        } finally {
+            // Clean up to not leak interrupt status into other tests.
+            if (!wasInterruptedBefore) {
+                Thread.interrupted(); // clears interrupt flag
+            }
+        }
+    }
+
+    @Test
+    @DisplayName("missing Accept-Ranges prints warning")
+    void missingAcceptRangesWarns() throws Exception {
+        stubHead(200, headers("Content-Length", "10")); // no Accept-Ranges
+
+        final DownloaderApp app = new DownloaderApp();
+
+        final int exitCode = app.run(new String[]{"http://localhost:8080/a.bin"}, httpClient);
+
+        assertThat(exitCode).isEqualTo(DownloaderApp.EXIT_SUCCESS);
+        assertThat(stderr.toString()).contains("Warning: Accept-Ranges is not 'bytes'");
+    }
+    
 }
