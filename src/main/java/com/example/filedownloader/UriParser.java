@@ -25,7 +25,7 @@ final class UriParser {
         final boolean isHttps = "https".equalsIgnoreCase(scheme);
 
         if (!isHttp && !isHttps) {
-            throw new IllegalArgumentException("Error: URL must start with http:// or https:// ");
+            throw new IllegalArgumentException("Error: URL must start with http:// or https://");
         }
 
         return uri;
