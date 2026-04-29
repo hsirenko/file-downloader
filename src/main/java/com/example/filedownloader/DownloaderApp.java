@@ -23,6 +23,11 @@ public final class DownloaderApp {
     private static final String PHASE2_DEMO_FLAG = "--phase2-demo";
     private static final int PHASE2_DEMO_CHUNK_END = 99;
 
+    private static final String PHASE4_DEMO_FLAG = "--phase4-demo";
+    private static final int PHASE4_CHUNK_SIZE = 4096;
+    private static final int PHASE4_PARALLELISM = 4;
+    private static final String PHASE4_OUTPUT_PATH = "storage/output-phase4.bin";
+
     private final UriParser uriParser;
 
     DownloaderApp() {
@@ -93,6 +98,10 @@ public final class DownloaderApp {
             System.err.println("Warning: Accept-Ranges is not 'bytes'. Parallel ranged download may not work.");
         }
 
+        if (isPhase4DemoEnabled(args)) {
+            return runPhase4ParallelDemo(uri, httpClient, metadata);
+        }
+
         if (isPhase2DemoEnabled(args)) {
             return runPhase2ChunkDemo(uri, httpClient);
         }
@@ -143,7 +152,7 @@ public final class DownloaderApp {
 
         final java.util.List<String> filtered = new java.util.ArrayList<>();
         for (final String arg : args) {
-            if (!PHASE2_DEMO_FLAG.equals(arg)) {
+            if (!PHASE2_DEMO_FLAG.equals(arg) && !PHASE4_DEMO_FLAG.equals(arg)) {
                 filtered.add(arg);
             }
         }
@@ -183,5 +192,55 @@ public final class DownloaderApp {
         return new String(bytes, 0, length, java.nio.charset.StandardCharsets.UTF_8)
                 .replace("\n", "\\n")
                 .replace("\r", "\\r");
+    }
+
+    private static boolean isPhase4DemoEnabled(final String[] args) {
+        if (args == null) {
+            return false;
+        }
+        for (final String arg : args) {
+            if (PHASE4_DEMO_FLAG.equals(arg)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private int runPhase4ParallelDemo(final URI uri, final HttpClient httpClient, final FileMetadata metadata) {
+        final long length = metadata.contentLength();
+        if (length <= 0) {
+            System.err.println("Cannot parallel download: invalid Content-Length.");
+            return EXIT_INVALID_CONTENT_LENGTH;
+        }
+    
+        final ChunkDownloader chunkDownloader = new ChunkDownloader(
+                httpClient,
+                new RangeRequestBuilder(REQUEST_TIMEOUT),
+                new ContentRangeParser()
+        );
+        final HttpChunkFetcher fetcher = new HttpChunkFetcher(chunkDownloader);
+        final RandomAccessFileChunkSink sink = new RandomAccessFileChunkSink(new java.io.File(PHASE4_OUTPUT_PATH));
+    
+        final ParallelDownloadOrchestrator orchestrator = new ParallelDownloadOrchestrator(
+                new RangePlanner(),
+                fetcher,
+                sink
+        );
+    
+        try {
+            orchestrator.download(uri, length, PHASE4_CHUNK_SIZE, PHASE4_PARALLELISM);
+            final java.io.File out = new java.io.File(PHASE4_OUTPUT_PATH);
+            System.out.println("Phase 4 demo: parallel download complete");
+            System.out.println("Output: " + out.getAbsolutePath());
+            System.out.println("Size (bytes): " + out.length());
+            return EXIT_SUCCESS;
+        } catch (IOException e) {
+            System.err.println("Parallel download failed: " + e);
+            return EXIT_NETWORK_ERROR;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Parallel download interrupted.");
+            return EXIT_INTERRUPTED;
+        }
     }
 }
