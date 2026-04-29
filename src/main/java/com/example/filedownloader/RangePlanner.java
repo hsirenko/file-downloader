@@ -9,15 +9,13 @@ import java.util.List;
 final class RangePlanner {
 
     List<ByteRange> plan(final long contentLength, final int chunkSize) {
-
         if (contentLength <= 0) {
             throw new IllegalArgumentException("contentLength must be > 0");
-            
         }
         if (chunkSize <= 0) {
             throw new IllegalArgumentException("chunkSize must be > 0");
         }
-        
+
         final List<ByteRange> ranges = new ArrayList<>();
 
         long start = 0;

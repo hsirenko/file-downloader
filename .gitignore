@@ -13,4 +13,6 @@ build/
 *.log
 *.class
 
-storage/output-phase4.bin
+storage/*.bin
+storage/*.part
+storage/downloaded*

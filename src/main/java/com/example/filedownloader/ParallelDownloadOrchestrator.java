@@ -4,7 +4,11 @@ import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
 
 final class ParallelDownloadOrchestrator {
 
@@ -13,9 +17,9 @@ final class ParallelDownloadOrchestrator {
     private final ChunkSink chunkSink;
 
     ParallelDownloadOrchestrator(
-        final RangePlanner rangePlanner,
-        final ChunkFetcher chunkFetcher,
-        final ChunkSink chunkSink
+            final RangePlanner rangePlanner,
+            final ChunkFetcher chunkFetcher,
+            final ChunkSink chunkSink
     ) {
         this.rangePlanner = rangePlanner;
         this.chunkFetcher = chunkFetcher;
@@ -23,12 +27,12 @@ final class ParallelDownloadOrchestrator {
     }
 
     void download(
-        final URI uri,
-        final long contentLength,
-        final int chunkSize,
-        final int parallelism
+            final URI uri,
+            final long contentLength,
+            final int chunkSize,
+            final int parallelism
     ) throws IOException, InterruptedException {
-        
+
         if (parallelism <= 0) {
             throw new IllegalArgumentException("parallelism must be > 0");
         }
