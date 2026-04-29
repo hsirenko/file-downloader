@@ -1,5 +1,7 @@
 package com.example.filedownloader;
 
+import static org.mockito.ArgumentMatchers.argThat;
+
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -80,12 +82,16 @@ class DownloaderAppTest {
     }
 
     @Test
-    @DisplayName("success when HEAD returns 200 with parseable headers")
+    @DisplayName("success when HEAD and single chunk download succeed")
     void success() throws Exception {
         stubHead(200, headers(
                 "Content-Length", "10",
                 "Accept-Ranges", "bytes"
         ));
+
+        stubChunk(206, headers(
+            "Content-Range", "bytes 0-9/10"
+        ), bytesOfLength(10));
 
         final DownloaderApp app = new DownloaderApp();
 
@@ -109,10 +115,9 @@ class DownloaderAppTest {
         final HttpResponse<Void> response = mock(HttpResponse.class);
         when(response.statusCode()).thenReturn(status);
         when(response.headers()).thenReturn(hdrs);
-
         when(httpClient.send(
-            any(HttpRequest.class),
-            org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<Void>>any()
+                argThat(request -> request != null && "HEAD".equals(request.method())),
+                org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<Void>>any()
         )).thenReturn(response);
     }
 
@@ -152,16 +157,41 @@ class DownloaderAppTest {
     }
 
     @Test
-    @DisplayName("missing Accept-Ranges prints warning")
-    void missingAcceptRangesWarns() throws Exception {
+    @DisplayName("missing Accept-Ranges fails in strict parallel mode")
+    void missingAcceptRangesFails() throws Exception {
         stubHead(200, headers("Content-Length", "10")); // no Accept-Ranges
 
         final DownloaderApp app = new DownloaderApp();
 
         final int exitCode = app.run(new String[]{"http://localhost:8080/a.bin"}, httpClient);
 
-        assertThat(exitCode).isEqualTo(DownloaderApp.EXIT_SUCCESS);
-        assertThat(stderr.toString()).contains("Warning: Accept-Ranges is not 'bytes'");
+        assertThat(exitCode).isEqualTo(DownloaderApp.EXIT_HTTP_ERROR);
+        assertThat(stderr.toString()).contains("Cannot download in parallel");
+    }
+
+    @SuppressWarnings("unchecked")
+    private void stubChunk(final int status, final HttpHeaders hdrs, final byte[] body) throws Exception {
+        final HttpResponse<byte[]> response = mock(HttpResponse.class);
+        when(response.statusCode()).thenReturn(status);
+        when(response.headers()).thenReturn(hdrs);
+        when(response.body()).thenReturn(body);
+
+        when(httpClient.send(
+                argThat(request ->
+                        request != null 
+                            && "GET".equals(request.method())
+                            && request.headers().firstValue("Range").isPresent()
+                ),
+                org.mockito.ArgumentMatchers.<HttpResponse.BodyHandler<byte[]>>any()
+        )).thenReturn(response);
+    }
+
+    private static byte[] bytesOfLength(final int length) {
+        final byte[] bytes = new byte[length];
+        for (int i = 0; i < length; i++) {
+            bytes[i] = (byte) ('A' + (i % 26));
+        }
+        return bytes;
     }
     
 }

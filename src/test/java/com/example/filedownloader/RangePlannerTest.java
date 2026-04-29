@@ -91,11 +91,13 @@ class RangePlannerTest {
     @Test
     @DisplayName("handles large file lengths with long arithmetic")
     void handlesLargeLengths() {
-    final long contentLength = (long) Integer.MAX_VALUE + 10_000L;
-    final int chunkSize = 1_048_576; // 1 MiB
-    final List<ByteRange> ranges = planner.plan(contentLength, chunkSize);
-    assertThat(ranges).isNotEmpty();
-    assertThat(ranges.get(0).startInclusive()).isEqualTo(0);
-    assertThat(ranges.get(ranges.size() - 1).endInclusive()).isEqualTo(contentLength - 1);
+        final long contentLength = (long) Integer.MAX_VALUE + 10_000L;
+        final int chunkSize = 1_048_576; // 1 MiB
+
+        final List<ByteRange> ranges = planner.plan(contentLength, chunkSize);
+
+        assertThat(ranges).isNotEmpty();
+        assertThat(ranges.get(0).startInclusive()).isEqualTo(0);
+        assertThat(ranges.get(ranges.size() - 1).endInclusive()).isEqualTo(contentLength - 1);
     }
 }

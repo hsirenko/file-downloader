@@ -25,7 +25,7 @@ final class RandomAccessFileChunkSink implements ChunkSink {
             throw new IllegalArgumentException("Byte length does not match range length");
         }
 
-        //Safe simple approach: each call opens own RAF and writes non-overlapping range.
+        // Safe simple approach: each call opens its own RAF and writes a non-overlapping range.
         try (RandomAccessFile raf = new RandomAccessFile(outputFile, "rw")) {
             raf.seek(range.startInclusive());
             raf.write(bytes);

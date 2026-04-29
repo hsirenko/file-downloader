@@ -5,6 +5,8 @@ import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.net.URI;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.Duration;
 
 public final class DownloaderApp {
@@ -20,23 +22,16 @@ public final class DownloaderApp {
     private static final Duration CONNECT_TIMEOUT = Duration.ofSeconds(10);
     private static final Duration REQUEST_TIMEOUT = Duration.ofSeconds(20);
 
-    private static final String PHASE2_DEMO_FLAG = "--phase2-demo";
-    private static final int PHASE2_DEMO_CHUNK_END = 99;
-
-    private static final String PHASE4_DEMO_FLAG = "--phase4-demo";
-    private static final int PHASE4_CHUNK_SIZE = 4096;
-    private static final int PHASE4_PARALLELISM = 4;
-    private static final String PHASE4_OUTPUT_PATH = "storage/output-phase4.bin";
-
-    private final UriParser uriParser;
+    private final ArgsParser argsParser;
 
     DownloaderApp() {
-        this(new UriParser());
+        this(new ArgsParser());
     }
 
-    DownloaderApp(final UriParser uriParser) {
-        this.uriParser = uriParser;
+    DownloaderApp(final ArgsParser argsParser) {
+        this.argsParser = argsParser;
     }
+
     public static void main(final String[] args) {
 
         final int exitCode = new DownloaderApp().run(args);
@@ -47,27 +42,24 @@ public final class DownloaderApp {
         return run(args, defaultHttpClient());
     }
 
-    
     /**
      * Test seam: callers supply an {@link HttpClient} (Mockito mock).
      */
     int run(final String[] args, final HttpClient httpClient) {
-        final URI uri;
+        final DownloaderConfig config;
         try {
-            final String[] urlOnlyArgs = extractUrlOnlyArgs(args);
-            uri = uriParser.parseRequiredHttpUrl(urlOnlyArgs);
+            config = argsParser.parse(args);
         } catch (IllegalArgumentException e) {
             System.err.println(e.getMessage());
             return EXIT_USAGE_ERROR;
         }
 
-        final HttpRequest headRequest = buildHeadRequest(uri);
-
         final FileMetadata metadata;
 
         try {
-            final var response = httpClient.send(headRequest, HttpResponse.BodyHandlers.discarding());
-            metadata = HeadMetadataParser.parse(response, uri);
+            final HttpRequest headRequest = buildHeadRequest(config.uri());
+            final HttpResponse<Void> response = httpClient.send(headRequest, HttpResponse.BodyHandlers.discarding());
+            metadata = HeadMetadataParser.parse(response, config.uri());
         } catch (IOException e) {
             System.err.println("Network error: " + e);
             if (e.getCause() != null) {
@@ -90,24 +82,60 @@ public final class DownloaderApp {
             return EXIT_HTTP_ERROR;
         }
 
-        if (metadata.contentLength() < 0) {
-            System.err.println("Warning: Content-Length is missing or invalid.");
+        if (metadata.contentLength() <= 0) {
+            System.err.println("Cannot download: invalid Content-Length.");
+            return EXIT_INVALID_CONTENT_LENGTH;
         }
 
         if (!metadata.supportsByteRanges()) {
-            System.err.println("Warning: Accept-Ranges is not 'bytes'. Parallel ranged download may not work.");
+            System.err.println("Cannot download in parallel: Accept-Ranges is not 'bytes'.");
+            return EXIT_HTTP_ERROR;
         }
 
-        if (isPhase4DemoEnabled(args)) {
-            return runPhase4ParallelDemo(uri, httpClient, metadata);
+        try {
+            ensureParentDirectory(config.outputPath());
+
+            final ChunkDownloader chunkDownloader = new ChunkDownloader(
+                    httpClient,
+                    new RangeRequestBuilder(REQUEST_TIMEOUT),
+                    new ContentRangeParser()
+            );
+            final ChunkFetcher fetcher = new HttpChunkFetcher(chunkDownloader);
+            final ChunkSink sink = new RandomAccessFileChunkSink(config.outputPath().toFile());
+
+            final ParallelDownloadOrchestrator orchestrator = new ParallelDownloadOrchestrator(
+                    new RangePlanner(),
+                    fetcher,
+                    sink
+            );
+
+            orchestrator.download(
+                    config.uri(),
+                    metadata.contentLength(),
+                    config.chunkSize(),
+                    config.threads()
+            );
+
+            final long writtenSize = Files.size(config.outputPath());
+
+            System.out.println("Parallel download complete.");
+            System.out.println("Output: " + config.outputPath().toAbsolutePath());
+            System.out.println("Expected size (bytes): " + metadata.contentLength());
+            System.out.println("Written size (bytes): " + writtenSize);
+            System.out.println("Tip: verify with shasum/cmp against source file.");
+
+            return EXIT_SUCCESS;
+        } catch (IOException e) {
+            System.err.println("Parallel download failed: " + e);
+            return EXIT_NETWORK_ERROR;
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            System.err.println("Parallel download interrupted.");
+            return EXIT_INTERRUPTED;
+        } catch (IllegalStateException e) {
+            System.err.println("Protocol validation failed: " + e.getMessage());
+            return EXIT_HTTP_ERROR;
         }
-
-        if (isPhase2DemoEnabled(args)) {
-            return runPhase2ChunkDemo(uri, httpClient);
-        }
-
-        return EXIT_SUCCESS;
-
     }
 
     private static HttpClient defaultHttpClient() {
@@ -123,7 +151,13 @@ public final class DownloaderApp {
                     .method("HEAD", HttpRequest.BodyPublishers.noBody())
                     .build();
     }
-    
+
+    private static void ensureParentDirectory(final Path outputPath) throws IOException {
+        final Path parent = outputPath.getParent();
+        if (parent != null) {
+            Files.createDirectories(parent);
+        }
+    }
     private static void printMetadata(final FileMetadata metadata) {
         System.out.println("URL: " + metadata.uri());
         System.out.println("Status: " + metadata.statusCode());
@@ -131,116 +165,5 @@ public final class DownloaderApp {
         System.out.println("Accept-Ranges: " + metadata.acceptRangesHeader().orElse("<missing>"));
         System.out.println("Supports byte ranges: " + metadata.supportsByteRanges());
         System.out.println("Parsed file size (bytes): " + metadata.contentLength());
-    }
-
-    private static boolean isPhase2DemoEnabled(final String[] args) {
-        if (args == null) {
-            return false;
-        }
-        for (final String arg : args) {
-            if (PHASE2_DEMO_FLAG.equals(arg)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private static String[] extractUrlOnlyArgs(final String[] args) {
-        if (args == null) {
-            return null;
-        }
-
-        final java.util.List<String> filtered = new java.util.ArrayList<>();
-        for (final String arg : args) {
-            if (!PHASE2_DEMO_FLAG.equals(arg) && !PHASE4_DEMO_FLAG.equals(arg)) {
-                filtered.add(arg);
-            }
-        }
-        return filtered.toArray(new String[0]);
-    }
-
-    private int runPhase2ChunkDemo(final URI uri, final HttpClient httpClient) {
-        final ByteRange range = new ByteRange(0, PHASE2_DEMO_CHUNK_END);
-        final ChunkDownloader chunkDownloader = new ChunkDownloader(
-                httpClient,
-                new RangeRequestBuilder(REQUEST_TIMEOUT),
-                new ContentRangeParser()
-        );
-        try {
-            final ChunkDownloadResult result = chunkDownloader.downloadChunk(uri, range);
-            System.out.println("Phase 2 demo: single range download");
-            System.out.println("Downloaded range: " + range.toRangeHeaderValue());
-            System.out.println("Chunk size (bytes): " + result.bytes().length);
-            System.out.println("First bytes preview (UTF-8): " + previewUtf8(result.bytes(), 32));
-            return EXIT_SUCCESS;
-        } catch (IOException e) {
-            System.err.println("Network error during chunk download: " + e);
-            return EXIT_NETWORK_ERROR;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Chunk download interrupted.");
-            return EXIT_INTERRUPTED;
-        } catch (IllegalStateException e) {
-            // protocol/validation failures (wrong status, missing headers, mismatch)
-            System.err.println("Chunk download validation failed: " + e.getMessage());
-            return EXIT_HTTP_ERROR;
-        }
-    }
-
-    private static String previewUtf8(final byte[] bytes, final int maxBytes) {
-        final int length = Math.min(bytes.length, maxBytes);
-        return new String(bytes, 0, length, java.nio.charset.StandardCharsets.UTF_8)
-                .replace("\n", "\\n")
-                .replace("\r", "\\r");
-    }
-
-    private static boolean isPhase4DemoEnabled(final String[] args) {
-        if (args == null) {
-            return false;
-        }
-        for (final String arg : args) {
-            if (PHASE4_DEMO_FLAG.equals(arg)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    private int runPhase4ParallelDemo(final URI uri, final HttpClient httpClient, final FileMetadata metadata) {
-        final long length = metadata.contentLength();
-        if (length <= 0) {
-            System.err.println("Cannot parallel download: invalid Content-Length.");
-            return EXIT_INVALID_CONTENT_LENGTH;
-        }
-    
-        final ChunkDownloader chunkDownloader = new ChunkDownloader(
-                httpClient,
-                new RangeRequestBuilder(REQUEST_TIMEOUT),
-                new ContentRangeParser()
-        );
-        final HttpChunkFetcher fetcher = new HttpChunkFetcher(chunkDownloader);
-        final RandomAccessFileChunkSink sink = new RandomAccessFileChunkSink(new java.io.File(PHASE4_OUTPUT_PATH));
-    
-        final ParallelDownloadOrchestrator orchestrator = new ParallelDownloadOrchestrator(
-                new RangePlanner(),
-                fetcher,
-                sink
-        );
-    
-        try {
-            orchestrator.download(uri, length, PHASE4_CHUNK_SIZE, PHASE4_PARALLELISM);
-            final java.io.File out = new java.io.File(PHASE4_OUTPUT_PATH);
-            System.out.println("Phase 4 demo: parallel download complete");
-            System.out.println("Output: " + out.getAbsolutePath());
-            System.out.println("Size (bytes): " + out.length());
-            return EXIT_SUCCESS;
-        } catch (IOException e) {
-            System.err.println("Parallel download failed: " + e);
-            return EXIT_NETWORK_ERROR;
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            System.err.println("Parallel download interrupted.");
-            return EXIT_INTERRUPTED;
-        }
     }
 }
