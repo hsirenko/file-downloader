@@ -1,9 +1,12 @@
 package com.example.filedownloader;
 
+import java.net.ConnectException;
+import java.net.URI;
+import java.net.UnknownHostException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.net.URI;
+import java.net.http.HttpTimeoutException;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -61,10 +64,7 @@ public final class DownloaderApp {
             final HttpResponse<Void> response = httpClient.send(headRequest, HttpResponse.BodyHandlers.discarding());
             metadata = HeadMetadataParser.parse(response, config.uri());
         } catch (IOException e) {
-            System.err.println("Network error: " + e);
-            if (e.getCause() != null) {
-                System.err.println("Cause: " + e.getCause());
-            }
+            System.err.println(describeNetworkFailure(e, config.uri()));
             return EXIT_NETWORK_ERROR;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -126,7 +126,7 @@ public final class DownloaderApp {
 
             return EXIT_SUCCESS;
         } catch (IOException e) {
-            System.err.println("Parallel download failed: " + e);
+            System.err.println(describeNetworkFailure(e, config.uri()));
             return EXIT_NETWORK_ERROR;
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
@@ -158,6 +158,44 @@ public final class DownloaderApp {
             Files.createDirectories(parent);
         }
     }
+
+    private static String describeNetworkFailure(final IOException e, final URI uri) {
+        final ConnectException connect = findInChain(e, ConnectException.class);
+        if (connect != null) {
+            final String detail = connect.getMessage() != null ? connect.getMessage() : "connection failed";
+            final String target = uri.getAuthority() != null ? uri.getAuthority() : uri.toString();
+            return "Network error: cannot connect to " + target + " (" + detail + "). "
+                    + "Check that the server is running and the URL is correct.";
+        }
+        final UnknownHostException unknownHost = findInChain(e, UnknownHostException.class);
+        if (unknownHost != null) {
+            final String host = unknownHost.getMessage() != null ? unknownHost.getMessage() : "(unknown)";
+            return "Network error: unknown host '" + host + "'.";
+        }
+        if (findInChain(e, HttpTimeoutException.class) != null) {
+            return "Network error: request timed out.";
+        }
+        final String msg = e.getMessage();
+        if (msg != null && !msg.isBlank()) {
+            return "Network error: " + msg;
+        }
+        return "Network error: " + e.getClass().getSimpleName();
+    }
+
+    private static <T extends Throwable> T findInChain(Throwable t, final Class<T> type) {
+        while (t != null) {
+            if (type.isInstance(t)) {
+                return type.cast(t);
+            }
+            final Throwable cause = t.getCause();
+            if (cause == t) {
+                break;
+            }
+            t = cause;
+        }
+        return null;
+    }
+
     private static void printMetadata(final FileMetadata metadata) {
         System.out.println("URL: " + metadata.uri());
         System.out.println("Status: " + metadata.statusCode());
